@@ -1,57 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO.Compression;
-using System.Diagnostics;
+using System.Windows;
+using Microsoft.Win32; // Dla OpenFileDialog
+using System.Windows.Forms; // Dla FolderBrowserDialog
 
 namespace Kompresja
 {
-    /// <summary>
-    /// Logika interakcji dla klasy MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private string selectedFilePath;
+        private string saveFolderPath;
+
         public MainWindow()
         {
             InitializeComponent();
         }
-        private void Send_Click(object send, EventArgs e)
+
+        private void SelectFileButton_Click(object sender, RoutedEventArgs e)
         {
-            string spTekst = sp.Text;
-            string szTekst = sz.Text;
-            if (File.Exists(spTekst) && File.Exists(szTekst))
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
             {
-                CompressFile(spTekst, szTekst);
-                MessageBox.Show("Plik został skompresowany i zapisany w " + szTekst);
+                selectedFilePath = openFileDialog.FileName;
+            }
+        }
+
+        private void SelectSaveFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            using (var folderDialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    saveFolderPath = folderDialog.SelectedPath;
+                }
+            }
+        }
+
+        private void Send_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(selectedFilePath) && !string.IsNullOrEmpty(saveFolderPath))
+            {
+                string zipFilePath = Path.Combine(saveFolderPath, Path.GetFileNameWithoutExtension(selectedFilePath) + ".zip");
+                CompressFile(selectedFilePath, zipFilePath);
+                System.Windows.MessageBox.Show("Plik został skompresowany i zapisany w " + zipFilePath);
             }
             else
             {
-                MessageBox.Show("Ścieżka do pliku jest nie poprawna. Ścieżka do pliku powina wyglądać tak: C:\\folder\\plik.rozszeżenie pliku");
+                System.Windows.MessageBox.Show("Proszę wybrać zarówno plik do kompresji, jak i folder do zapisu.");
             }
         }
-        static void CompressFile(string sourceFile, string compressedFile)
+
+        static void CompressFile(string sourceFile, string zipFile)
         {
-            using (FileStream originalFileStream = new FileStream(sourceFile, FileMode.Open, FileAccess.Read))
+            // Użycie ZipFile do kompresji pliku
+            using (var zipArchive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
             {
-                using (FileStream compressedFileStream = new FileStream(compressedFile, FileMode.Create))
-                {
-                    using (GZipStream compressionStream = new GZipStream(compressedFileStream, CompressionMode.Compress))
-                    {
-                        originalFileStream.CopyTo(compressionStream);
-                    }
-                }
+                zipArchive.CreateEntryFromFile(sourceFile, Path.GetFileName(sourceFile));
             }
         }
     }
