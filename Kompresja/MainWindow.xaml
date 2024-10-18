@@ -1,4 +1,4 @@
-﻿<Window x:Class="Kompresja.MainWindow"
+<Window x:Class="Kompresja.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,11 +7,12 @@
         mc:Ignorable="d"
         Title="Kompresja" Height="170" Width="270">
     <Grid Background="#FF36DD33">
-        <TextBox HorizontalAlignment="Left" Margin="10,36,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="115" Height="22" Name="sp"/>
-        <Button Content="Kompresuj plik" HorizontalAlignment="Left" Margin="152,42,0,0" VerticalAlignment="Top" Height="46" Width="92" Name="send" Click="Send_Click" />
         <Label Content="ścieżka do pliku" HorizontalAlignment="Left" Margin="21,10,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="10,96,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="115" Height="22" Name="sz"/>
-        <Label Content="ścieżka do zapisu" HorizontalAlignment="Left" Margin="17,70,0,0" VerticalAlignment="Top"/>
+        <Button Content="Wybierz plik" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Width="115" Height="22" Name="selectFileButton" Click="SelectFileButton_Click"/>
 
+        <Label Content="ścieżka do zapisu" HorizontalAlignment="Left" Margin="17,70,0,0" VerticalAlignment="Top"/>
+        <Button Content="Wybierz folder" HorizontalAlignment="Left" Margin="10,96,0,0" VerticalAlignment="Top" Width="115" Height="22" Name="selectSaveFolderButton" Click="SelectSaveFolderButton_Click"/>
+
+        <Button Content="Kompresuj plik" HorizontalAlignment="Left" Margin="152,42,0,0" VerticalAlignment="Top" Height="46" Width="92" Name="send" Click="Send_Click" />
     </Grid>
 </Window>
